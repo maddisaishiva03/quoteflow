@@ -821,6 +821,37 @@ app.post('/api/quotations', async (req, res) => {
   }
 })
 
+
+// GET QUOTATION HISTORY
+app.get('/api/quotations', async (_req, res) => {
+  try {
+    const result = await db.execute(`
+      SELECT
+        q.id,
+        q.quotation_number,
+        q.customer_id,
+        c.customer_name,
+        c.phone,
+        q.subtotal,
+        q.total,
+        q.created_at
+      FROM quotations q
+      INNER JOIN customers c
+        ON q.customer_id = c.id
+      ORDER BY q.id DESC
+    `)
+
+    res.json(result.rows)
+  } catch (error) {
+    console.error('Failed to fetch quotations:', error)
+
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch quotation history',
+    })
+  }
+})
+
 // =====================================================
 // START SERVER
 // =====================================================

@@ -104,6 +104,7 @@ function App() {
   ])
 
   const [savingQuotation, setSavingQuotation] = useState(false)
+  const [quotations, setQuotations] = useState<any[]>([])
 
   // ============================================================
   // LOAD CUSTOMER TYPES
@@ -139,6 +140,20 @@ const loadCustomers = async () => {
     console.error('Failed to load customers:', error)
   }
 }
+
+const loadQuotations = async () => {
+  try {
+    const response = await fetch(
+      'http://localhost:3000/api/quotations',
+    )
+
+    const data = await response.json()
+
+    setQuotations(data)
+  } catch (error) {
+    console.error('Failed to load quotations:', error)
+  }
+}
   // ============================================================
   // LOAD PRODUCTS
   // ============================================================
@@ -165,6 +180,7 @@ const loadCustomers = async () => {
     loadCustomerTypes()
     loadCustomers()
     loadProducts()
+     loadQuotations()
   }, [])
 
   // ============================================================
@@ -515,7 +531,7 @@ const loadCustomers = async () => {
         `Quotation ${data.quotation.quotationNumber} created successfully`,
       )
 
-      resetQuotationForm()
+      await resetQuotationForm()
     } catch (error) {
       console.error('Failed to create quotation:', error)
       alert('Something went wrong while creating quotation')
